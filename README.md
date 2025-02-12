@@ -93,3 +93,68 @@ Lesson 2: SQLAlchemy ORM (Object Relational Mapper) - Defining Models and Intera
             Connection management – Opens and closes database connections automatically.
             Transaction control – Groups multiple operations into a single transaction.
             Query execution – Helps retrieve and manipulate data using Python objects.
+    
+Lesson 3: Querying and Filtering Data in SQLAlchemy ORM
+    In this lesson, you’ll learn how to:
+        Query all records
+        Filter data using filter() and filter_by()
+        Use comparison operators (==, <, >, like())
+        Use first(), all(), limit(), and count()
+    Step 1: Querying All Data.
+        The session.query(Model) method allows you to retrieve data from the database.
+        Example:
+            session = SessionLocal()  # Open a session
+            users = session.query(User).all()  # Get all users # all() returns a list of all records.
+            for user in users:
+                print(user.id, user.name, user.age)
+            session.close()  # Always close session
+    Step 2: Filtering Data with filter()
+        The filter() method lets you specify conditions to filter the query.
+        Example: Get Users older than 25
+            users = session.query(User).filter(User.age > 25).all()
+            for user in users:
+                print(user.name, user.age)
+
+        # Comparison operators you can use in filter():
+            == (equal)
+            != (not equal)
+            < (less than)
+            > (greater than)
+            <= (less than or equal)
+            >= (greater than or equal)
+
+    Step 3: Using filter_by() for simple filters.
+        SQLAlchemy provides another method, filter_by(), but it’s limited to equality checks.
+        Example: get a User named "Alice"
+            user = session.query(User).filter_by(name="Alice").first()
+            print(user.id, user.name, user.age)
+        
+        # Difference Between filter() and filter_by()
+            filter() is more powerful and allows complex conditions (<, >, !=, etc.).
+            filter_by() is simpler but only supports == conditions.
+    
+    Step 4: Using like(), in(), and between()
+        SQLAlchemy provides additional filtering methods for flexible queries.
+        Example: Find Users whose name starts with "A"
+            from sqlalchemy import like
+            users = session.query(User).filter(User.name.like("A%")).all()
+            #  % is a wildcard: "A%" means names starting with "A".
+        Example: Find Users with specific ages (in())
+            users = session.query(User).filter(User.age.in_([20, 25, 30])).all()
+            # in_([list]) checks if a column matches any value in a list.
+        Example: Find Users aged between 20 and 30 (between())
+            users = session.query(User).filter(User.age.between(20, 30)).all()
+            between(x, y) selects records between two values (inclusive).
+    
+    Step 5: Using first(), count(), and limit()
+        Example: Get the first record
+            user = session.query(User).first()
+            print(user.name, user.age)
+            # first() returns only one record, or None if no data is found.
+        Example: Count the number of users
+            user_count = session.query(User).count()
+            print("Total Users:", user_count)
+            # count() returns the total number of records in a table.
+        Example: Get the first 3 users (limit())
+            users = session.query(User).limit(3).all()
+            # limit(n) restricts the number of results returned.
